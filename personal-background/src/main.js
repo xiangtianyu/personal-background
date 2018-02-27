@@ -22,8 +22,7 @@ router.beforeEach((to, from, next) => {
       let res = api.checkLoginStatus(token);
       if (res.result === 0) {
         next({
-          path: '/login',
-          query: {redirect: to.fullPath}
+          path: '/login'
         })
       }
       else {
@@ -38,7 +37,7 @@ router.beforeEach((to, from, next) => {
       }
     }
     else {
-      if (from.name === 'login') {
+      if (to.name === 'login') {
         next();
       }
       else {
@@ -49,6 +48,20 @@ router.beforeEach((to, from, next) => {
     }
   }
   else {
+    if (to.name === 'login' && store.has("loginToken")) {
+      let token = store.get("loginToken");
+      let res = api.checkLoginStatus(token);
+      if (res.result === 0) {
+        next({
+          path: '/login'
+        })
+      }
+      else {
+        next({
+          path: '/console'
+        })
+      }
+    }
     next();
   }
 })
